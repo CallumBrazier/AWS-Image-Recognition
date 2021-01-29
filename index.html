@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Turner's</title>
+    <style>
+      img {
+        width: 50rem;
+        height: auto;
+      }
+    </style>
+  </head>
+  <script>
+    var loadFile = function (event) {
+      var output = document.getElementById("output");
+      output.src = URL.createObjectURL(event.target.files[0]);
+      output.onload = function () {
+        URL.revokeObjectURL(output.src);
+      };
+    };
+
+    // function clearForm() {
+    //   document.getElementById("myform").reset();
+    //   document.getElementById("status").innerHTML = "Image submitted!";
+    // }
+  </script>
+
+  <body>
+    <h2>
+      Upload the car you would like to purchase,<br />
+      we'll see what we've got under the hood
+    </h2>
+    <form method="POST" enctype="multipart/form-data" action="/">
+      <input
+        type="file"
+        name="filename"
+        accept="image/*"
+        onchange="loadFile(event)"
+      />
+
+      <input type="submit" value="Upload File Image" />
+    </form>
+    <form method="POST" enctype="multipart/form-data" action="/url" id="myform">
+      <input type="text" id="url" name="url" placeholder="Enter photo URL" />
+      <input type="button" id="button" value="View Image" />
+      <input type="submit" value="Upload URL Image" />
+    </form>
+    <img id="output" />
+  </body>
+  <script>
+    var button = document.getElementById("button");
+
+    button.addEventListener("click", function (event) {
+      var imageurl = document.getElementById("url").value;
+
+      document.getElementById("output").src = imageurl;
+      //   var img = document.createElement("img");
+
+      //   img.src = imageurl;
+
+      //   document.body.appendChild(img);
+    });
+  </script>
+</html>
