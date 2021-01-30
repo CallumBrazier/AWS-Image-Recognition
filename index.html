@@ -12,18 +12,13 @@
     </style>
   </head>
   <script>
-    var loadFile = function (event) {
-      var output = document.getElementById("output");
+    let loadFile = (event) => {
+      let output = document.getElementById("output");
       output.src = URL.createObjectURL(event.target.files[0]);
       output.onload = function () {
         URL.revokeObjectURL(output.src);
       };
     };
-
-    // function clearForm() {
-    //   document.getElementById("myform").reset();
-    //   document.getElementById("status").innerHTML = "Image submitted!";
-    // }
   </script>
 
   <body>
@@ -49,17 +44,12 @@
     <img id="output" />
   </body>
   <script>
-    var button = document.getElementById("button");
+    let button = document.getElementById("button");
 
     button.addEventListener("click", function (event) {
-      var imageurl = document.getElementById("url").value;
+      let imageurl = document.getElementById("url").value;
 
       document.getElementById("output").src = imageurl;
-      //   var img = document.createElement("img");
-
-      //   img.src = imageurl;
-
-      //   document.body.appendChild(img);
     });
   </script>
 </html>
