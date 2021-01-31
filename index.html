@@ -30,26 +30,44 @@
       <input
         type="file"
         name="filename"
+        id="input1"
         accept="image/*"
         onchange="loadFile(event)"
-      />
-
-      <input type="submit" value="Upload File Image" />
-    </form>
-    <form method="POST" enctype="multipart/form-data" action="/url" id="myform">
-      <input type="text" id="url" name="url" placeholder="Enter photo URL" />
-      <input type="button" id="button" value="View Image" />
-      <input type="submit" value="Upload URL Image" />
+      /><br />
+      <input type="text" id="input2" name="url" placeholder="Enter photo URL" />
+      <input type="button" id="viewbutton" value="View Image" />
+      <br />
+      <input type="submit" id="submit" value="Upload Image" />
     </form>
     <img id="output" />
   </body>
   <script>
-    let button = document.getElementById("button");
+    let button = document.getElementById("viewbutton");
 
     button.addEventListener("click", function (event) {
-      let imageurl = document.getElementById("url").value;
+      let imageurl = document.getElementById("input2").value;
 
       document.getElementById("output").src = imageurl;
     });
+
+    let inp1 = document.getElementById("input1");
+    let inp2 = document.getElementById("input2");
+
+    inp1.oninput = function () {
+      inp2.disabled = this.value != "";
+      document.getElementById("viewbutton").disabled = this.value != "";
+      if (inp1.files.length != 0) {
+        document.getElementById("submit").disabled = this.value == "";
+      }
+    };
+
+    inp2.oninput = function () {
+      inp1.disabled = this.value != "";
+      document.getElementById("submit").disabled = this.value == "";
+    };
+
+    if (inp2.value === "" && inp1.files.length === 0) {
+      document.getElementById("submit").disabled = this.value != "";
+    }
   </script>
 </html>

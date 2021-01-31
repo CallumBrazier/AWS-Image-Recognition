@@ -26,16 +26,12 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
 
-//save image from desktop to local disk and send it to AWS Rekognition to analyse.
 app.post("/", (req, res) => {
+  //save image from desktop to local disk and send it to AWS Rekognition to analyse.
   if (req.files) {
-    console.log("files", req.files);
-    console.log("filename", req.files.filename);
-
     let file = req.files.filename;
     let filename = file.name;
     console.log(filename);
-    console.log("data", file.data);
 
     file.mv("./uploads/" + filename, (err) => {
       if (err) {
@@ -43,14 +39,14 @@ app.post("/", (req, res) => {
       } else {
         let bitmap = req.files.filename.data;
         AnalysePhoto(bitmap);
-        res.send("File Uploaded and analysed!");
+        // res.send({ message: "file uploaded!" });
+        // res.send("Local File Uploaded and analysed!");
+        res.redirect("/");
       }
     });
   }
-});
 
-//save image from URL to local disk and send it to AWS Rekognition to analyse.
-app.post("/url", (req, res) => {
+  //save image from URL to local disk and send it to AWS Rekognition to analyse.
   if (req.body.url) {
     let url = req.body.url;
     console.log(url);
@@ -66,7 +62,10 @@ app.post("/url", (req, res) => {
       let request = https.get(url, function (response) {
         response.pipe(localPath);
         console.log("File uploaded!");
-        res.send("File uploaded and analysed!");
+        // res.send({ message: "File uploaded" });
+        // res.send("URL File uploaded and analysed!");
+        res.redirect("/");
+        // res.json(req.body);
       });
     };
 
@@ -81,20 +80,20 @@ app.post("/url", (req, res) => {
   }
 });
 
-AnalysePhoto = (x) => {
+AnalysePhoto = (convertedImage) => {
   const params = {
     Image: {
-      Bytes: x,
+      Bytes: convertedImage,
     },
-    MaxLabels: 5,
+    MaxLabels: 10,
     MinConfidence: 80,
   };
 
-  client.detectLabels(params, function (err, response) {
+  client.detectLabels(params, function (err, res) {
     if (err) {
       console.log(err, err.stack); // an error occurred
     } else {
-      console.log(response);
+      console.log(res);
     }
   });
 };
@@ -104,3 +103,5 @@ app.listen(port, (err) => {
     ? console.log(`ERROR ${console.log(err)}`)
     : console.log(`running server on port ${port}`);
 });
+
+module.exports = { AnalysePhoto, app };

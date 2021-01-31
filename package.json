@@ -4,7 +4,8 @@
   "description": "recognition application aws ",
   "main": "recognitionapp.js",
   "scripts": {
-    "start": "nodemon upload.js"
+    "start": "nodemon upload.js",
+    "test": "jest"
   },
   "keywords": [
     "aws",
@@ -31,5 +32,8 @@
     "request": "^2.88.2",
     "ts-node": "^9.1.1",
     "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3"
   }
 }
