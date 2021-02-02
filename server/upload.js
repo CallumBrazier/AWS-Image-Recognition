@@ -1,9 +1,12 @@
 const express = require("express");
-const upload = require("express-fileupload");
-const port = 5000;
+const multer = require("multer");
+const port = 3001;
 const fs = require("fs");
+const { promisify } = require("util");
+const pipeline = promisify(require("stream").pipeline);
 const https = require("https");
 const request = require("request");
+const cors = require("cors");
 require("dotenv").config();
 var AWS = require("aws-sdk");
 
@@ -13,43 +16,41 @@ const config = new AWS.Config({
   region: process.env.AWS_REGION,
 });
 
-// AWS.config.update({ region: "ap-southeast-2" });
-
 const client = new AWS.Rekognition();
 
 const app = express();
 
-app.use(upload());
-app.use(express.json());
+app.use(cors());
 
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/index.html");
-});
+const upload = multer();
 
-app.post("/", (req, res) => {
-  //save image from desktop to local disk and send it to AWS Rekognition to analyse.
-  if (req.files) {
-    let file = req.files.filename;
-    let filename = file.name;
-    console.log(filename);
+let result = "";
 
-    file.mv("./uploads/" + filename, (err) => {
-      if (err) {
-        console.log("error:", err);
-      } else {
-        let bitmap = req.files.filename.data;
-        AnalysePhoto(bitmap);
-        // res.send({ message: "file uploaded!" });
-        // res.send("Local File Uploaded and analysed!");
-        res.redirect("/");
-      }
-    });
+app.post("/upload", upload.single("file"), async (req, res) => {
+  console.log("did it work?");
+  const { file } = req;
+
+  //save local file and upload to AWS for analysis
+  if (req.file != null) {
+    let file = req.file;
+    let filename = file.originalname;
+    let bitmap = file.buffer;
+
+    try {
+      await pipeline(
+        file.stream,
+        fs.createWriteStream(`${__dirname}/uploads/${filename}`),
+        res.send("File uploaded!"),
+        AnalysePhoto(bitmap)
+      );
+    } catch (err) {
+      return console.log(err);
+    }
   }
 
-  //save image from URL to local disk and send it to AWS Rekognition to analyse.
-  if (req.body.url) {
-    let url = req.body.url;
-    console.log(url);
+  //save file from url and upload to AWS for analysis
+  if (req.body.file) {
+    let url = req.body.file;
 
     let options = {
       url: url,
@@ -61,14 +62,10 @@ app.post("/", (req, res) => {
       let localPath = fs.createWriteStream(path);
       let request = https.get(url, function (response) {
         response.pipe(localPath);
-        console.log("File uploaded!");
-        // res.send({ message: "File uploaded" });
-        // res.send("URL File uploaded and analysed!");
-        res.redirect("/");
-        // res.json(req.body);
+        res.send("File uploaded!");
       });
     };
-
+    saveImage(url, "./uploads/" + Date.now() + ".jpg");
     request(options, function (err, res, body) {
       if (err) {
         console.error("error: ", err);
@@ -76,7 +73,6 @@ app.post("/", (req, res) => {
         AnalysePhoto(body);
       }
     });
-    saveImage(url, "./uploads/" + Date.now() + ".jpg");
   }
 });
 
@@ -94,14 +90,17 @@ AnalysePhoto = (convertedImage) => {
       console.log(err, err.stack); // an error occurred
     } else {
       console.log(res);
+      result = res;
     }
   });
 };
+
+app.get("/analyse", async (req, res) => {
+  await res.status(200).send(result);
+});
 
 app.listen(port, (err) => {
   err
     ? console.log(`ERROR ${console.log(err)}`)
     : console.log(`running server on port ${port}`);
 });
-
-module.exports = { AnalysePhoto, app };

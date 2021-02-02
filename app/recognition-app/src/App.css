@@ -1,0 +1,102 @@
+@import url("https://fonts.googleapis.com/css2?family=Oswald&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@600&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+#output {
+  width: 50rem;
+  height: auto;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  background-color: #333d79ff;
+  color: white;
+  font-family: "Oswald", sans-serif;
+  text-align: center;
+  /* background: linear-gradient(to top right, rgb(7, 94, 145), rgb(42, 164, 250)); */
+}
+
+.car {
+  width: 100vw;
+  height: auto;
+}
+
+p {
+  font-size: 2rem;
+}
+
+#input2 {
+  width: 90%;
+  font-size: 1.5rem;
+  border: 2px solid #333d79ff;
+  border-radius: 0.25rem;
+}
+
+#reset,
+button {
+  width: 8rem;
+  height: 3rem;
+  color: #333d79ff;
+  background-color: #faebefff;
+  margin: 1rem 2rem 1rem 2rem;
+  border: 2px solid #333d79ff;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+#reset:focus,
+button:focus {
+  outline: none;
+}
+
+#reset:disabled,
+button:disabled {
+  cursor: not-allowed;
+  border: 1px solid white;
+  color: white;
+  background-color: rgb(226, 226, 226);
+}
+
+.form-container {
+  background-color: #faebefff;
+  margin: 2% 4% 2% 4%;
+  width: 92%;
+  height: 100vh;
+  overflow: auto;
+  border-radius: 0.5rem;
+}
+
+.inner-container {
+  background-color: white;
+  padding: 1px;
+  margin: 5% 4% 4% 4%;
+  width: 92%;
+  height: auto;
+  border-radius: 0.5rem;
+}
+
+.title {
+  text-align: left;
+  margin: 0 0 0 5%;
+  color: #333d79ff;
+}
+
+input[type="file"] {
+  float: left;
+  margin: 0 0 1% 5%;
+  border: 2px solid #333d79ff;
+  border-radius: 0.25rem;
+  width: 90%;
+  font-size: 1.25rem;
+  color: #333d79ff;
+}
+
+.status {
+  color: #333d79ff;
+}
