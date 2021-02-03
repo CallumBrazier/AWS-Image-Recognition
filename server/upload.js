@@ -2,8 +2,6 @@ const express = require("express");
 const multer = require("multer");
 const port = 3001;
 const fs = require("fs");
-const { promisify } = require("util");
-const pipeline = promisify(require("stream").pipeline);
 const https = require("https");
 const request = require("request");
 const cors = require("cors");
@@ -21,30 +19,24 @@ const client = new AWS.Rekognition();
 const app = express();
 
 app.use(cors());
+app.use(express.json());
 
 const upload = multer();
 
 let result = "";
 
 app.post("/upload", upload.single("file"), async (req, res) => {
-  console.log("did it work?");
-  const { file } = req;
-
   //save local file and upload to AWS for analysis
   if (req.file != null) {
     let file = req.file;
     let filename = file.originalname;
-    let bitmap = file.buffer;
-
+    let buffer = file.buffer;
     try {
-      await pipeline(
-        file.stream,
-        fs.createWriteStream(`${__dirname}/uploads/${filename}`),
-        res.send("File uploaded!"),
-        AnalysePhoto(bitmap)
-      );
+      fs.createWriteStream(`${__dirname}/uploads/${filename}`).write(buffer),
+        res.status(200).send("File uploaded!"),
+        AnalysePhoto(buffer);
     } catch (err) {
-      return console.log(err);
+      res.status(400).send("Error uploading image");
     }
   }
 

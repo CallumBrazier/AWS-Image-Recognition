@@ -75,10 +75,16 @@ button:disabled {
 .inner-container {
   background-color: white;
   padding: 1px;
-  margin: 5% 4% 4% 4%;
+  margin: 0% 4% 4% 4%;
   width: 92%;
   height: auto;
   border-radius: 0.5rem;
+}
+
+.main-title {
+  text-align: left;
+  margin: 0 0 0 8.5%;
+  color: #333d79ff;
 }
 
 .title {
@@ -99,4 +105,26 @@ input[type="file"] {
 
 .status {
   color: #333d79ff;
+}
+
+table {
+  display: table;
+  align-items: center;
+  margin: 0 0 2rem 0;
+  font-size: 1.25rem;
+}
+
+td {
+  justify-content: start;
+  margin: 0 1em 0 0;
+}
+
+.table-div {
+  display: flex;
+  justify-content: center;
+}
+
+.table-head {
+  font-size: 1.5rem;
+  font-weight: bolder;
 }

@@ -8,6 +8,7 @@ function App() {
   const [disabled2, setDisabled2] = useState(false);
   const [disabled3, setDisabled3] = useState(true);
   const [disabled4, setDisabled4] = useState(true);
+  const [disabled5, setDisabled5] = useState(false);
   const [image, setImage] = useState();
   const [file, setFile] = useState();
   const [progress, setProgress] = useState(0);
@@ -47,8 +48,9 @@ function App() {
     setDisabled2(false);
     setDisabled3(true);
     setDisabled4(true);
+    setDisabled5(false);
     setImage();
-    setStatus();
+    setStatus("Form Reset!");
     setAnalysis([]);
     document.getElementById("input1").value = "";
     document.getElementById("input2").value = "";
@@ -79,6 +81,7 @@ function App() {
       console.log(resp);
     });
     setDisabled4(true);
+    setDisabled5(true);
     setStatus();
   };
 
@@ -112,6 +115,7 @@ function App() {
     <div className="App">
       <div>
         <div className="form-container">
+          <h1 className="main-title">Turner's Image Recognition</h1>
           <div className="inner-container">
             <form action="#">
               <h2 className="title">Upload a local file:</h2>
@@ -151,24 +155,34 @@ function App() {
             </form>
             <h2 className="status">{status}</h2>
             <img id="output" alt="" src={image} />
-            <h2 className="status">
-              {analysis.data &&
-                analysis.data.Labels.map((data) => {
-                  return (
-                    <div>
-                      <tr>
-                        <td>{data.Name}</td>
-                        <td>
-                          {Math.round(
-                            (data.Confidence + Number.EPSILON) * 100
-                          ) / 100}
-                          %
-                        </td>
-                      </tr>
-                    </div>
-                  );
-                })}
-            </h2>
+            <div className="table-div">
+              <table className="status">
+                {disabled5 ? (
+                  <thead>
+                    <tr>
+                      <td className="table-head">Label</td>
+                      <td className="table-head">Confidence</td>
+                    </tr>
+                  </thead>
+                ) : null}
+                {analysis.data &&
+                  analysis.data.Labels.map((data, index) => {
+                    return (
+                      <tbody key={index}>
+                        <tr>
+                          <td>{data.Name}</td>
+                          <td>
+                            {Math.round(
+                              (data.Confidence + Number.EPSILON) * 100
+                            ) / 100}
+                            %
+                          </td>
+                        </tr>
+                      </tbody>
+                    );
+                  })}
+              </table>
+            </div>
           </div>
         </div>
       </div>
