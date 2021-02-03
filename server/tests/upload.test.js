@@ -1,6 +1,15 @@
-const { AnalysePhoto } = require("../upload.js");
+const { analysePhoto } = require("./__mocks__/upload");
 
-test("should return image analysis", () => {
-  const image = AnalysePhoto(".uploads/bugatti.jpg");
-  expect(image).toContain("Coupe");
+test("should get image analysis", async () => {
+  await expect(analysePhoto()).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        Labels: expect.arrayContaining([
+          expect.objectContaining({
+            Name: "Truck",
+          }),
+        ]),
+      }),
+    ])
+  );
 });

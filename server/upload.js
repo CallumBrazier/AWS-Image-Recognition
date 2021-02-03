@@ -5,8 +5,8 @@ const fs = require("fs");
 const https = require("https");
 const request = require("request");
 const cors = require("cors");
-require("dotenv").config();
-var AWS = require("aws-sdk");
+require("dotenv").config({ path: "./config/.env" });
+const AWS = require("aws-sdk");
 
 const config = new AWS.Config({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -34,7 +34,7 @@ app.post("/upload", upload.single("file"), async (req, res) => {
     try {
       fs.createWriteStream(`${__dirname}/uploads/${filename}`).write(buffer),
         res.status(200).send("File uploaded!"),
-        AnalysePhoto(buffer);
+        analysePhoto(buffer);
     } catch (err) {
       res.status(400).send("Error uploading image");
     }
@@ -62,13 +62,13 @@ app.post("/upload", upload.single("file"), async (req, res) => {
       if (err) {
         console.error("error: ", err);
       } else {
-        AnalysePhoto(body);
+        analysePhoto(body);
       }
     });
   }
 });
 
-AnalysePhoto = (convertedImage) => {
+analysePhoto = (convertedImage) => {
   const params = {
     Image: {
       Bytes: convertedImage,

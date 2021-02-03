@@ -2,7 +2,7 @@ const fakeData = [
   {
     Labels: [
       {
-        Name: "Car",
+        Name: "Truck",
         Confidence: 99.93836212158203,
         Instances: [Array],
         Parents: [Array],
@@ -17,40 +17,31 @@ const fakeData = [
   },
 ];
 
-const params = {
-  Image: {
-    Bytes: convertedImage,
-  },
-  MaxLabels: 10,
-  MinConfidence: 80,
+convertedImage = [];
+
+const analysePhoto = (convertedImage) => {
+  let params = {
+    Image: {
+      Bytes: convertedImage,
+    },
+    MaxLabels: 10,
+    MinConfidence: 80,
+  };
+
+  let result = "";
+
+  let fakeAWSCall =
+    (params,
+    (err, res) => {
+      if (err) {
+        return err;
+      } else {
+        result = fakeData;
+      }
+    });
+  fakeAWSCall();
+
+  return result;
 };
 
-export default async(params, function (err, res) {
-  if (err) {
-    console.log(err, err.stack);
-  } else {
-    console.log(res);
-    return fakeData;
-  }
-});
-
-// export default function request(url) {
-//   return new Promise((resolve, reject) => {
-//     const userID = parseInt(url.substr("/users/".length), 10);
-//     process.nextTick(() =>
-//       users[userID]
-//         ? resolve(users[userID])
-//         : reject({
-//             error: "User with " + userID + " not found.",
-//           })
-//     );
-//   });
-// }
-
-// await client.detectLabels(params, function (err, res) {
-//   if (err) {
-//     console.log(err, err.stack);
-//   } else {
-//     console.log(res);
-//   }
-// });
+module.exports.analysePhoto = analysePhoto;
