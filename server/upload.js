@@ -31,9 +31,10 @@ app.post("/upload", upload.single("file"), async (req, res) => {
     let file = req.file;
     let filename = file.originalname;
     let buffer = file.buffer;
+    console.log(file);
     try {
       fs.createWriteStream(`${__dirname}/uploads/${filename}`).write(buffer),
-        res.status(200).send("File uploaded!"),
+        res.status(200).send("File uploaded..."),
         analysePhoto(buffer);
     } catch (err) {
       res.status(400).send("Error uploading image");
@@ -54,7 +55,7 @@ app.post("/upload", upload.single("file"), async (req, res) => {
       let localPath = fs.createWriteStream(path);
       let request = https.get(url, function (response) {
         response.pipe(localPath);
-        res.send("File uploaded!");
+        res.send("File uploaded...");
       });
     };
     saveImage(url, "./uploads/" + Date.now() + ".jpg");

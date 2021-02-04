@@ -17,12 +17,23 @@ const fakeData = [
   },
 ];
 
-convertedImage = [];
+const post = (imageFile) => {
+  if (imageFile != null) {
+    try {
+      console.log("File uploaded!");
+      let convertedImage = ["Truck image!"];
+      analysePhoto(convertedImage);
+      return convertedImage;
+    } catch (err) {
+      console.log("Error uploading image", err);
+    }
+  }
+};
 
-const analysePhoto = (convertedImage) => {
+const analysePhoto = (convertedFile) => {
   let params = {
     Image: {
-      Bytes: convertedImage,
+      Bytes: convertedFile,
     },
     MaxLabels: 10,
     MinConfidence: 80,
@@ -37,11 +48,14 @@ const analysePhoto = (convertedImage) => {
         return err;
       } else {
         result = fakeData;
+        console.log("Image analysed!");
       }
     });
+
   fakeAWSCall();
 
   return result;
 };
 
 module.exports.analysePhoto = analysePhoto;
+module.exports.post = post;
