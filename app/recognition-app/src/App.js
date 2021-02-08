@@ -18,13 +18,13 @@ function App() {
   const [disabled2, setDisabled2] = useState(false);
   const [disabled3, setDisabled3] = useState(true);
   const [disabled4, setDisabled4] = useState(true);
-  const [disabled5, setDisabled5] = useState(false);
   const [image, setImage] = useState();
   const [file, setFile] = useState();
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState();
   const [analysis, setAnalysis] = useState([]);
   const classes = useStyles();
+  const link = `https://www.turners.co.nz/Cars/Used-Cars-for-Sale/?types=${analysis}`;
 
   let loadFile = (event) => {
     try {
@@ -59,7 +59,6 @@ function App() {
     setDisabled2(false);
     setDisabled3(true);
     setDisabled4(true);
-    setDisabled5(false);
     setImage();
     setStatus("Form Reset!");
     setProgress(0);
@@ -89,13 +88,28 @@ function App() {
 
   const getAnalysis = () => {
     Axios.get("http://localhost:3001/analyse").then((resp) => {
-      setAnalysis(resp);
-      console.log(resp);
+      const outcome = resp.data.Labels;
+      const keywords = [
+        "Coupe",
+        "Truck",
+        "Convertible",
+        "Hatchback",
+        "Van",
+        "Wagon",
+        "SUV",
+        "Sedan",
+      ];
+      const result = outcome.map((a) => a.Name);
+      let keyitem = result.filter((i) => keywords.includes(i));
+      setAnalysis(keyitem);
+      keyitem[0]
+        ? setStatus(`Your vehicle is a ${keyitem[0]}`)
+        : setStatus(
+            "No matching photos in our database - please try a different image"
+          );
     });
     setDisabled4(true);
-    setDisabled5(true);
     setProgress(0);
-    setStatus();
   };
 
   const submitImage = async (e) => {
@@ -134,7 +148,6 @@ function App() {
   return (
     <div className="App">
       <div>
-        {/* <div className="form-container"> */}
         <h1 className="main-title">Turners Image Recognition</h1>
         <div className="inner-container">
           <form action="#">
@@ -169,42 +182,20 @@ function App() {
             <input type="reset" id="reset" value="Reset form" onClick={reset} />
           </form>
           <h2 className="status">{status}</h2>
+          <div className="table-div">
+            {analysis.length < 1 ? null : (
+              <a href={link}>
+                <button>Go to cars</button>
+              </a>
+            )}
+          </div>
           <div className={classes.root}>
             <CircularProgress variant="determinate" value={progress} />
           </div>
           <img id="output" alt="" src={image} />
-          <div className="table-div">
-            <table className="status">
-              {disabled5 ? (
-                <thead>
-                  <tr>
-                    <td className="table-head">Label</td>
-                    <td className="table-head">Confidence</td>
-                  </tr>
-                </thead>
-              ) : null}
-              {analysis.data &&
-                analysis.data.Labels.map((data, index) => {
-                  return (
-                    <tbody key={index}>
-                      <tr>
-                        <td>{data.Name}</td>
-                        <td>
-                          {Math.round(
-                            (data.Confidence + Number.EPSILON) * 100
-                          ) / 100}
-                          %
-                        </td>
-                      </tr>
-                    </tbody>
-                  );
-                })}
-            </table>
-          </div>
         </div>
       </div>
     </div>
-    // </div>
   );
 }
 
